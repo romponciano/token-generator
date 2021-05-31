@@ -1,1 +1,1 @@
-# token-maker
+# token-generator

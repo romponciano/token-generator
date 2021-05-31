@@ -16,12 +16,11 @@ const CreateForm = () => {
     }
 
     const appendNewField = () => {
-        var newFields = fields
+        const newFields = [...fields]
         newFields.push(createNewField())
         setFields([...newFields])
     }
 
-    const [idCount, setIdCount] = useState(0)
     const [fields, setFields] = useState([createNewField()])
 
     return (
