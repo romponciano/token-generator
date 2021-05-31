@@ -21,8 +21,15 @@ module.exports = {
                 use: 'babel-loader',
             },
             {
-                test: /\.css$/,
+                test: /\.(css)$/,
                 use: ['style-loader', 'css-loader']
+            },
+            {
+                test: /\.(woff|woff2|eot|ttf|otf|xml|svg)$/,
+                loader: 'file-loader',
+                options: {
+                    outputPath: '../fonts',
+                }
             }
         ]
     },
