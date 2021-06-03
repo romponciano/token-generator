@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { BrowserRouter, Route, Switch } from 'react-router-dom'
 import styled from 'styled-components'
 import CreateForm from './create-form'
-import Login from './login'
+import Login from './login/login'
 import useSession from '../hooks/useSession'
 
 const App = () => {

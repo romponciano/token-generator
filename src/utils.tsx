@@ -7,7 +7,6 @@ const TEXT_TYPE = {
 }
 
 const BASE_URL = 'https://token-generator-api.herokuapp.com/tg'
-// const BASE_URL = 'https://localhost:8083/tg'
 
 export {
     TEXT_TYPE,
