@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+        "skipLibCheck": true,
+        "outDir": "./dist/",
+        "noImplicitAny": true,
+        "module": "ES2020",
+        "target": "ES2020",
+        "jsx": "react",
+        "allowJs": false,
+        "moduleResolution": "node",
+        "allowSyntheticDefaultImports": true
+    },
+    "exclude": [
+        "**/node_modules/*"
+    ]
+}

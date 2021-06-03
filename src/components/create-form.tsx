@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import TEXT_TYPE from './utils'
+import { TEXT_TYPE } from '../utils'
 
 const CreateForm = () => {
 
-    const createNewField = () => {
-        return {name: undefined, type: TEXT_TYPE.SMALL_TEXT}
+    const createNewField = (): IField => {
+        return {name: undefined, type: TEXT_TYPE.SMALL_TEXT, value: undefined}
     }
 
     const createSelectOptions = () => {
