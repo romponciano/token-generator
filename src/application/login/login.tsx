@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { sha256 } from 'js-sha256'
 import styled from 'styled-components'
-import ErrorMessage from './error-message'
+import { Notification, NOTIFICATION_TYPE } from '../../components/notification'
 
 const Login: 
     React.FC<{ setSession: (session: ISession) => Promise<void>}> = 
@@ -16,7 +16,7 @@ const Login:
 
     const [username, setUsername] = useState<string>()
     const [password, setPassword] = useState<string>()
-    const [errorMessage, setErrorMessage] = useState<String>()
+    const [errorMessage, setErrorMessage] = useState<string>()
 
     return (
         <StyledLogin>
@@ -38,7 +38,7 @@ const Login:
                                 <label>Password</label>
                                 <input type="password" className="form-control" placeholder="Password" onChange={e => setPassword(e.target.value)} />
                             </div>
-                            <ErrorMessage errorMessage={errorMessage} />
+                            <Notification type={NOTIFICATION_TYPE.DANGER} message={errorMessage} />
                             <ActionButtons>
                                 <button type="submit" className="btn btn-black" 
                                     onClick={e => {

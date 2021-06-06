@@ -11,4 +11,13 @@ declare global {
         type: string,
         value: unknown
     }
+
+    interface IModel {
+        fields: List<IField>,
+        tokens: List<IToken>?
+    }
+
+    interface IToken {
+        token: List<IField>
+    }
 }

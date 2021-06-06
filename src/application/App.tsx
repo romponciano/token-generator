@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
 import { BrowserRouter, Route, Switch } from 'react-router-dom'
 import styled from 'styled-components'
-import CreateForm from './create-form'
+import CreateModel from './model/create-model'
 import Login from './login/login'
 import useSession from '../hooks/useSession'
+import ModelList from './model/model-list'
 
 const App = () => {
 
@@ -17,8 +18,11 @@ const App = () => {
         <BaseLayout>
             <BrowserRouter>
                 <Switch>
-                    <Route path='/forms/'>
-                        <CreateForm />
+                    <Route exact={true} path='/'>
+                        <ModelList session={session} />
+                    </Route>
+                    <Route path='/create-model'>
+                        <CreateModel session={session} />
                     </Route>
                 </Switch>
             </BrowserRouter>
