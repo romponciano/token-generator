@@ -5,6 +5,7 @@ import CreateModel from './model/create-model'
 import Login from './login/login'
 import useSession from '../hooks/useSession'
 import ModelList from './model/model-list'
+import Navbar from './navbar'
 
 const App = () => {
 
@@ -15,6 +16,8 @@ const App = () => {
     }
 
     return (
+        <>
+        <Navbar session={session} setSession={setSession} />
         <BaseLayout>
             <BrowserRouter>
                 <Switch>
@@ -27,11 +30,12 @@ const App = () => {
                 </Switch>
             </BrowserRouter>
         </BaseLayout>
+        </>
     )
 }
 
 export default App
 
 const BaseLayout = styled.div`
-    margin: 25px;
+    margin: 65px 25px 25px 25px;
 `

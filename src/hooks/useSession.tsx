@@ -11,14 +11,13 @@ export default function useSession() {
         return undefined
     }
 
-    const saveSession = async (session: ISession) => {
-        const token = await USER_API.login(session)
+    const saveSession = async (session: ISession | undefined) => {
+        const token = session ? await USER_API.login(session) : undefined
         if(typeof token == 'string' || typeof token == 'number') {
             sessionStorage.setItem(USER_KEY, session.username)
             setSession(session)
         } else {
             sessionStorage.removeItem(USER_KEY)
-            setSession(undefined)
             throw 'Bad request'
         }
     }
