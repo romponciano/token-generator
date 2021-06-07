@@ -12,10 +12,10 @@ const ModelList: React.FC<{session: ISession}> = ({session}): JSX.Element => {
     const history = useHistory()
 
     useEffect(() => {
-        setModelsFromLoggedUser()
-    }, [])
+        loadModelsFromLoggedUser()
+    }, [session])
 
-    const setModelsFromLoggedUser = async () => {
+    const loadModelsFromLoggedUser = async () => {
         const m = await MODEL_API
             .models(session.username)
             .then(v => v)
@@ -38,10 +38,10 @@ const ModelList: React.FC<{session: ISession}> = ({session}): JSX.Element => {
                             <h5 className="card-title">{modelName}</h5>
                             <CardText className="card-text">
                                 <button type="button" className="btn btn-primary">
-                                    Access tokens
+                                    <i className="fas fa-book-open" />Tokens
                                 </button>
                                 <button type="button" className="btn btn-secondary">
-                                    Edit model
+                                    <i className="far fa-edit" />Model
                                 </button>
                             </CardText>
                         </div>
@@ -60,14 +60,19 @@ const ActionList = styled.div`
 `
 
 const Card = styled.div`
-    max-width: 300px;
-    min-width: 300px;
+    max-width: 250px;
+    min-width: 250px;
+
+    i {
+        margin-right: 10px;
+    }
 `
 
 const CardText = styled.div`
     text-align: center;
+    display: ruby;
 
-    button {
+    .btn-primary {
         margin-right: 15px;
     }
 `

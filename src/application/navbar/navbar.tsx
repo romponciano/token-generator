@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useHistory } from 'react-router-dom'
 import styled from 'styled-components'
 
 const Navbar: React.FC<{ 
@@ -6,10 +7,13 @@ const Navbar: React.FC<{
     setSession: (session: ISession | undefined) => Promise<void> }> = 
     ({session, setSession}) => {
 
+    const history = useHistory()
+    
     const [display, setDisplay] = useState('none')
     
-    const openProfileMenu = () => {
-        setDisplay(display == 'none' ? 'inherit' : 'none')
+    const toggleDropdown = (close?: boolean) => {
+        if(close) setDisplay('none')
+        else setDisplay(display == 'none' ? 'inherit' : 'none')
     }
 
     const DropdownMenu = styled.div`
@@ -40,11 +44,14 @@ const Navbar: React.FC<{
                     <input className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" />
                     <button className="btn btn-outline-light my-2 my-sm-0" type="submit">Search</button>
                     <ProfileIcon className="dropdown">
-                        <i className="fas fa-user fa-2x" onClick={() => openProfileMenu()} />
+                        <i className="fas fa-user fa-2x" onClick={() => toggleDropdown()} />
                         <DropdownMenu className="dropdown-menu">
-                            <a className="dropdown-item" href="/profile-settings">
+                            <div className="dropdown-item" onClick={() => {
+                                history.push("/profile")
+                                toggleDropdown(true)
+                            }}>
                                 <i className="fas fa-tools" />Settings
-                            </a>
+                            </div>
                             <a className="dropdown-item" href="/" onClick={() => setSession(undefined)}>
                                 <i className="fas fa-sign-out-alt" />Logout
                             </a>
