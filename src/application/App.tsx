@@ -35,10 +35,6 @@ const App = () => {
                                         <Route exact path={`/create-model`}>
                                             <CreateModel session={session} />
                                         </Route>
-                                        
-                                        <Route exact path={`/profile`}>
-                                            <ProfileSettings session={session} setSession={setSession} />
-                                        </Route>
                                     </>
                                 )
                             }} />

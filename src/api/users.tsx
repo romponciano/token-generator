@@ -1,9 +1,9 @@
 import { BASE_URL, DEFAULT_HEADER } from '../utils'
 
-const USERS_URL = 'user'
+const USER_URL = `${BASE_URL}/user`
 
 const login = (session: ISession): Promise<unknown> => {
-    return fetch(`${BASE_URL}/${USERS_URL}/login`, {
+    return fetch(`${USER_URL}/login`, {
         method: 'POST',
         headers: DEFAULT_HEADER,
         body: JSON.stringify(session)
@@ -16,7 +16,7 @@ const updatePassword = (
     password: string, 
     newPassword: string
 ): Promise<number> => {
-    return fetch(`${BASE_URL}/${USERS_URL}`, {
+    return fetch(`${USER_URL}`, {
         method: 'PUT',
         headers: DEFAULT_HEADER,
         body: JSON.stringify({
@@ -28,9 +28,27 @@ const updatePassword = (
     .then(data => data.status)
 }
 
+const updateUser = (
+    username: string,
+    password: string,
+    newUsername: string
+): Promise<number> => {
+    return fetch(`${USER_URL}`, {
+        method: 'PUT',
+        headers: DEFAULT_HEADER,
+        body: JSON.stringify({
+            username: username,
+            password: password,
+            newUsername: newUsername
+        })
+    })
+    .then(data => data.status)
+}
+
 const USER_API = {
     login: login,
-    updatePassword: updatePassword
+    updatePassword: updatePassword,
+    updateUser: updateUser
 }
 
 export default USER_API

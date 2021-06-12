@@ -2,6 +2,9 @@ import { sha256 } from 'js-sha256'
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import USER_API from '../../api/users'
+import ActionIcon from '../../components/action-icon'
+import FinishButtons from '../../components/finish-buttons'
+import Modal from '../../components/modal'
 import { NotificationMessage, NOTIFICATION_TYPE } from '../../components/notification'
 
 const NewPassword: React.FC<{
@@ -56,8 +59,8 @@ const NewPassword: React.FC<{
 
     return (
         <>
-            <NotificationMessage {...notification} 
-                setMessage={setNotificationMessage} />
+            <NotificationMessage {...notification} setMessage={setNotificationMessage} />
+
             <div className="form-group row">
                 <label className="col-sm-5 col-form-label">Password</label>
                 <div className="col-sm-7">
@@ -70,91 +73,104 @@ const NewPassword: React.FC<{
                             onChange={e => setPassword(e.target.value)} 
                         />
 
-                        <ActionIcon className="input-group-text">
-                            <i 
+                        <span className="input-group-text">
+                            <ActionIcon 
                                 className={showPassword ? "fas fa-eye-slash" : "fas fa-eye"} 
                                 onClick={() => setShowPassword(!showPassword)}
                             />
-                        </ActionIcon>
+                        </span>
 
                         {!editPassword && 
-                            <ActionIcon className="input-group-text">
-                                <i 
+                            <span className="input-group-text">
+                                <ActionIcon 
                                     className="far fa-edit"
                                     onClick={() => setEditPassword(true)}
                                 />
-                            </ActionIcon>
+                            </span>
                         }
                     </div>
                 </div>
             </div>
 
-            {editPassword && 
-                <>
-                    <div className="form-group row">
-                        <label className="col-sm-5 col-form-label">New password</label>
-                        <div className="col-sm-6">
-                            <input 
-                                type={showPassword ? "text" : "password"}
-                                className="form-control" 
-                                placeholder="New password" 
-                                onChange={e => setNewPassword(e.target.value)} 
-                            />
+            <Modal
+                show={editPassword}
+                setShow={cancelUpdatePassword}
+                title={<h5>Edit password</h5>}
+                body={
+                    <>
+                        <div className="form-group row">
+                            <label className="col-sm-5 col-form-label">Password</label>
+                            <div className="col-sm-7">
+                                <div className="input-group">
+                                    <input 
+                                        type={showPassword ? "text" : "password"}
+                                        className="form-control" 
+                                        placeholder="Password" 
+                                        onChange={e => setPassword(e.target.value)} 
+                                    />
+                                    <span className="input-group-text">
+                                        <ActionIcon 
+                                            className={showPassword ? "fas fa-eye-slash" : "fas fa-eye"} 
+                                            onClick={() => setShowPassword(!showPassword)}
+                                        />
+                                    </span>
+                                </div>
+                            </div>
                         </div>
-                    </div>
 
-                    <div className="form-group row">
-                        <label className="col-sm-5 col-form-label">Confirm password</label>
-                        <div className="col-sm-6">
-                            <input 
-                                id="confirmPassword"
-                                type={showPassword ? "text" : "password"}
-                                className={!isPasswordCorrect && confirmPassword ? "form-control is-invalid" : "form-control"}
-                                placeholder="Confirm password" 
-                                onChange={e => {
-                                    const confirm = e.target.value
-                                    setConfirmPassword(confirm)
-                                    if(confirm != newPassword) setIsPasswordCorret(false)
-                                    else setIsPasswordCorret(true) 
-                                }}
-                            />
-                            <label className="invalid-feedback" htmlFor="confirmPassword">
-                                It doesn't match
-                            </label>
+                        <div className="form-group row">
+                            <label className="col-sm-5 col-form-label">New password</label>
+                            <div className="col-sm-6">
+                                <input 
+                                    type={showPassword ? "text" : "password"}
+                                    className="form-control" 
+                                    placeholder="New password" 
+                                    onChange={e => setNewPassword(e.target.value)} 
+                                />
+                            </div>
                         </div>
-                    </div>
 
-                    <FinishButtons>
-                        <button type="button" 
-                            disabled={!isPasswordCorrect || password == undefined} 
-                            className="btn btn-primary"
-                            onClick={() => updatePassword()}
-                        >
-                            Update
-                        </button>
-                        <button type="button" 
-                            className="btn btn-secondary mx-2" 
-                            onClick={() => cancelUpdatePassword()}
-                        >
-                            Cancel
-                        </button>
-                    </FinishButtons>
-                </>
-            }
+                        <div className="form-group row">
+                            <label className="col-sm-5 col-form-label">Confirm password</label>
+                            <div className="col-sm-6">
+                                <input 
+                                    id="confirmPassword"
+                                    type={showPassword ? "text" : "password"}
+                                    className={!isPasswordCorrect && confirmPassword ? "form-control is-invalid" : "form-control"}
+                                    placeholder="Confirm password" 
+                                    onChange={e => {
+                                        const confirm = e.target.value
+                                        setConfirmPassword(confirm)
+                                        if(confirm != newPassword) setIsPasswordCorret(false)
+                                        else setIsPasswordCorret(true) 
+                                    }}
+                                />
+                                <label className="invalid-feedback" htmlFor="confirmPassword">
+                                    It doesn't match
+                                </label>
+                            </div>
+                        </div>
+                    </>
+                }
+
+                footer={
+                    <FinishButtons 
+                        confirm={{
+                            label: 'Update',
+                            disabled: !isPasswordCorrect || password == undefined,
+                            onClick: () => updatePassword()
+                        }}
+                        
+                        cancel={{
+                            label: 'Cancel',
+                            disabled: false,
+                            onClick: () => cancelUpdatePassword()
+                        }}
+                    />
+                }
+             />
         </>
     )
 }
 
 export default NewPassword
-
-const ActionIcon = styled.span`
-    i {
-        cursor: pointer;
-    }
-`
-
-const FinishButtons = styled.div`
-    margin-top: 5px;
-    margin-right: 35px;
-    float: right;
-`

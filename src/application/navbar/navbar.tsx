@@ -1,14 +1,17 @@
 import React, { useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import styled from 'styled-components'
+import ActionIcon from '../../components/action-icon'
+import Modal from '../../components/modal'
+import ProfileSettings from '../profile-settings/profile-settings'
 
 const Navbar: React.FC<{ 
     session: ISession, 
-    setSession: (session: ISession | undefined) => Promise<void> }> = 
-    ({session, setSession}) => {
+    setSession: (session: ISession | undefined) => Promise<void> 
+}> = ({session, setSession}) => {
 
-    const history = useHistory()
-    
+    const [showSettings, setShowSettings] = useState<boolean>(false)
+
     const [display, setDisplay] = useState('none')
     
     const toggleDropdown = (close?: boolean) => {
@@ -44,14 +47,14 @@ const Navbar: React.FC<{
                     <input className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" />
                     <button className="btn btn-outline-light my-2 my-sm-0" type="submit">Search</button>
                     <ProfileIcon className="dropdown">
-                        <i className="fas fa-user fa-2x" onClick={() => toggleDropdown()} />
+                        <ActionIcon className="fas fa-user fa-2x" onClick={() => toggleDropdown()} />
                         <DropdownMenu className="dropdown-menu">
-                            <div className="dropdown-item" onClick={() => {
-                                history.push("/profile")
+                            <a className="dropdown-item" href="#" onClick={() => {
+                                setShowSettings(true)
                                 toggleDropdown(true)
                             }}>
                                 <i className="fas fa-tools" />Settings
-                            </div>
+                            </a>
                             <a className="dropdown-item" href="/" onClick={() => setSession(undefined)}>
                                 <i className="fas fa-sign-out-alt" />Logout
                             </a>
@@ -59,6 +62,13 @@ const Navbar: React.FC<{
                     </ProfileIcon>
                 </RightDiv>
             </div>
+
+            <Modal 
+                show={showSettings}
+                setShow={setShowSettings}
+                title={<h5>Profile Settings</h5>}
+                body={<ProfileSettings session={session} setSession={setSession} />}
+            />
         </nav>
     )
 }
