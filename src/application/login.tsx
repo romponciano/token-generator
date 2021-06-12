@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { sha256 } from 'js-sha256'
 import styled from 'styled-components'
-import { Notification, NOTIFICATION_TYPE } from '../../components/notification'
+import { NotificationMessage, NOTIFICATION_TYPE } from '../components/notification'
 
 const Login: 
     React.FC<{ setSession: (session: ISession) => Promise<void>}> = 
@@ -38,7 +38,11 @@ const Login:
                                 <label>Password</label>
                                 <input type="password" className="form-control" placeholder="Password" onChange={e => setPassword(e.target.value)} />
                             </div>
-                            <Notification type={NOTIFICATION_TYPE.DANGER} message={errorMessage} />
+                            <NotificationMessage 
+                                type={NOTIFICATION_TYPE.DANGER} 
+                                message={errorMessage} 
+                                setMessage={(value: string) => setErrorMessage(value)} 
+                            />
                             <ActionButtons>
                                 <button type="submit" className="btn btn-black" 
                                     onClick={e => {

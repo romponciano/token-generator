@@ -2,11 +2,11 @@ import React from 'react'
 import { HashRouter, Route, Switch } from 'react-router-dom'
 import styled from 'styled-components'
 import CreateModel from './model/create-model'
-import Login from './login/login'
+import Login from './login'
 import useSession from '../hooks/useSession'
 import ModelList from './model/model-list'
 import Navbar from './navbar/navbar'
-import ProfileSettings from '../application/navbar/profile-settings'
+import ProfileSettings from './profile-settings/profile-settings'
 
 const App = () => {
 
