@@ -1,5 +1,5 @@
 import React from 'react'
-import { BrowserRouter, Route, Switch } from 'react-router-dom'
+import { HashRouter, Route, Switch } from 'react-router-dom'
 import styled from 'styled-components'
 import CreateModel from './model/create-model'
 import Login from './login/login'
@@ -19,7 +19,7 @@ const App = () => {
     return (
         <>
         <BaseLayout>
-            <BrowserRouter>
+            <HashRouter>
                     <Switch>
                         <Route 
                             path="/" 
@@ -43,7 +43,7 @@ const App = () => {
                                 )
                             }} />
                     </Switch>
-            </BrowserRouter>
+            </HashRouter>
         </BaseLayout>
         </>
     )
