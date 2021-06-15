@@ -2,16 +2,17 @@ import React, { useState } from 'react'
 import { sha256 } from 'js-sha256'
 import styled from 'styled-components'
 import { NotificationMessage, NOTIFICATION_TYPE } from '../components/notification'
+import LoadingButton from '../components/loading-button'
 
 const Login: 
     React.FC<{ setSession: (session: ISession) => Promise<void>}> = 
     ({ setSession }): JSX.Element => {
 
-    const login = () => {
-        setSession({ username: username, password: sha256(password) })
-        .catch(e => {
-            setErrorMessage("Invalid username/password")
-        })
+    const login = (): Promise<void> => {
+        return setSession({ username: username, password: password })
+            .catch(e => {
+                setErrorMessage("Invalid username/password")
+            })
     }
 
     const [username, setUsername] = useState<string>()
@@ -44,15 +45,12 @@ const Login:
                                 setMessage={(value: string) => setErrorMessage(value)} 
                             />
                             <ActionButtons>
-                                <button type="submit" className="btn btn-black" 
-                                    onClick={e => {
-                                        e.preventDefault()
-                                        login()
-                                    }}
-                                >
-                                    Login
-                                </button>
-                                <button type="submit" className="btn btn-secondary"
+                                <LoadingButton 
+                                    className="btn btn-black" 
+                                    onClick={login}
+                                    label={"Login"}
+                                />
+                                <button type="button" className="btn btn-secondary"
                                     onClick={() => window.alert("Register disabled atm")}
                                 >
                                     Register

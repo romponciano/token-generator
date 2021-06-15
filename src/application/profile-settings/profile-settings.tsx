@@ -27,7 +27,7 @@ const ProfileSettings: React.FC<{
         USER_API.updateUser(session.username, sha256(password), username)
             .then(res => {
                 if(res == 200) {
-                    setSession({ username: username, password: sha256(password) })
+                    setSession({ username: username, password: password })
                     setNotification({
                         message: "Settings updated successfully! :)",
                         type: NOTIFICATION_TYPE.SUCCESS
