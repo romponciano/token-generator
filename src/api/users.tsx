@@ -45,10 +45,19 @@ const updateUser = (
     .then(data => data.status)
 }
 
+const exists = (username: String): Promise<unknown> => {
+    return fetch(`${USER_URL}/${username}/exists`, {
+        method: 'GET',
+        headers: DEFAULT_HEADER
+    })
+    .then(data => data.status)
+}
+
 const USER_API = {
     login: login,
     updatePassword: updatePassword,
-    updateUser: updateUser
+    updateUser: updateUser,
+    exists: exists
 }
 
 export default USER_API

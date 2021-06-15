@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { useHistory } from 'react-router-dom'
 import styled from 'styled-components'
 import ActionIcon from '../../components/action-icon'
 import Modal from '../../components/modal'

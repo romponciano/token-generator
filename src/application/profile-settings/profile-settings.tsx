@@ -1,6 +1,5 @@
 import { sha256 } from 'js-sha256'
 import React, { useState } from 'react'
-import { useHistory } from 'react-router-dom'
 import styled from 'styled-components'
 import USER_API from '../../api/users'
 import ActionIcon from '../../components/action-icon'
@@ -16,6 +15,7 @@ const ProfileSettings: React.FC<{
 
     const [username, setUsername] = useState<string>(session.username)
     const [editUsername, setEditUsername] = useState<boolean>(false)
+    const [usernameExists, setUsernameExists] = useState<boolean>(false)
 
     const [showConfirmation, setShowConfirmation] = useState<boolean>(false)
     const [password, setPassword] = useState<string>()
@@ -27,7 +27,7 @@ const ProfileSettings: React.FC<{
         USER_API.updateUser(session.username, sha256(password), username)
             .then(res => {
                 if(res == 200) {
-                    setSession({ username: username, password: password })
+                    setSession({ username: username, password: sha256(password) })
                     setNotification({
                         message: "Settings updated successfully! :)",
                         type: NOTIFICATION_TYPE.SUCCESS
@@ -44,6 +44,20 @@ const ProfileSettings: React.FC<{
                     })
                 }
             })
+    }
+
+    const userExists = async (): Promise<boolean> => {
+        console.log('vai checar: ', username)
+        const exists = await USER_API.exists(username).then(status => {
+            console.log('response: ', status)
+            if(status == 200 || session.username == username) {
+                setUsernameExists(false)
+                return false
+            }
+            setUsernameExists(true)
+            return true
+        })
+        return exists
     }
 
     return (
@@ -78,7 +92,7 @@ const ProfileSettings: React.FC<{
                     <FinishButtons 
                         confirm={{
                             label: 'Save',
-                            disabled: (password != undefined),
+                            disabled: (password == undefined),
                             onClick: () => updateUser()
                         }}
                         cancel={{
@@ -95,11 +109,16 @@ const ProfileSettings: React.FC<{
                 <div className="col-sm-7">
                     <div className="input-group">
                         <input 
+                            id="username"
                             type="text" 
                             readOnly={!editUsername}
-                            className="form-control" 
+                            className={usernameExists ? "form-control is-invalid" : "form-control"}
                             placeholder="username"
                             value={username} 
+                            onBlur={() => {
+                                console.log('perdeu foco')
+                                userExists()
+                            }}
                             onChange={e => setUsername(e.target.value)}
                         />
                     
@@ -109,6 +128,10 @@ const ProfileSettings: React.FC<{
                                 onClick={() => setEditUsername(!editUsername)}
                             />
                         </span>
+
+                        <label className="invalid-feedback" htmlFor="username">
+                            Username already exists
+                        </label>
                     </div>
                 </div>
             </Row>
@@ -118,8 +141,10 @@ const ProfileSettings: React.FC<{
             <FinishButtons 
                 confirm={{
                     label: 'Save',
-                    disabled: false,
-                    onClick: () => setShowConfirmation(true)
+                    disabled: usernameExists,
+                    onClick: () => {
+                        if(!userExists()) setShowConfirmation(true)
+                    }
                 }}
                 cancel={{
                     label: 'Cancel',

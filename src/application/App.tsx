@@ -6,7 +6,6 @@ import Login from './login'
 import useSession from '../hooks/useSession'
 import ModelList from './model/model-list'
 import Navbar from './navbar/navbar'
-import ProfileSettings from './profile-settings/profile-settings'
 
 const App = () => {
 
