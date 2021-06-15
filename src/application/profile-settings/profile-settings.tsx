@@ -4,8 +4,8 @@ import styled from 'styled-components'
 import USER_API from '../../api/users'
 import ActionIcon from '../../components/action-icon'
 import FinishButtons from '../../components/finish-buttons'
-import Modal from '../../components/modal'
 import { NotificationMessage, NOTIFICATION_TYPE } from '../../components/notification'
+import ConfirmationModal from './confirmation-modal'
 import NewPassword from './new-password'
 
 const ProfileSettings: React.FC<{ 
@@ -47,9 +47,7 @@ const ProfileSettings: React.FC<{
     }
 
     const userExists = async (): Promise<boolean> => {
-        console.log('vai checar: ', username)
         const exists = await USER_API.exists(username).then(status => {
-            console.log('response: ', status)
             if(status == 200 || session.username == username) {
                 setUsernameExists(false)
                 return false
@@ -67,41 +65,14 @@ const ProfileSettings: React.FC<{
                 setMessage={msg => setNotification({message: msg, type: notification.type})} 
             />
         
-            <Modal 
-                show={showConfirmation}
-                setShow={setShowConfirmation}
-                title={<h5>Type your password to confirm the update</h5>}
-                body={
-                    <div className="input-group">
-                        <input 
-                            type={showPassword ? "text" : "password"}
-                            className="form-control" 
-                            placeholder="Password" 
-                            onChange={e => setPassword(e.target.value)} 
-                        />
-
-                        <span className="input-group-text">
-                            <ActionIcon 
-                                className={showPassword ? "fas fa-eye-slash" : "fas fa-eye"} 
-                                onClick={() => setShowPassword(!showPassword)}
-                            />
-                        </span>
-                    </div>
-                }
-                footer={
-                    <FinishButtons 
-                        confirm={{
-                            label: 'Save',
-                            disabled: (password == undefined),
-                            onClick: () => updateUser()
-                        }}
-                        cancel={{
-                            label: 'Cancel',
-                            disabled: false,
-                            onClick: () => setShowConfirmation(false)
-                        }}
-                    />
-                }
+            <ConfirmationModal 
+                showPassword={showPassword}
+                setShowPassword={setShowPassword}
+                setPassword={setPassword}
+                showConfirmation={showConfirmation}
+                setShowConfirmation={setShowConfirmation}
+                password={password}
+                confirmAction={updateUser}
             />
 
             <Row className="form-group row">
@@ -115,10 +86,7 @@ const ProfileSettings: React.FC<{
                             className={usernameExists ? "form-control is-invalid" : "form-control"}
                             placeholder="username"
                             value={username} 
-                            onBlur={() => {
-                                console.log('perdeu foco')
-                                userExists()
-                            }}
+                            onBlur={() => userExists()}
                             onChange={e => setUsername(e.target.value)}
                         />
                     
@@ -143,7 +111,8 @@ const ProfileSettings: React.FC<{
                     label: 'Save',
                     disabled: usernameExists,
                     onClick: () => {
-                        if(!userExists()) setShowConfirmation(true)
+                        userExists()
+                            .then(exists => setShowConfirmation(!exists))
                     }
                 }}
                 cancel={{

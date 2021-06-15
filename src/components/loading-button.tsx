@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 const LoadingButton: React.FC<{
     label: string,
@@ -6,7 +6,12 @@ const LoadingButton: React.FC<{
     loadingLabel?: string
     className?: string
 }> = ({ label, onClick, loadingLabel = "", className }): JSX.Element => {
+
     const [isLoading, setIsLoading] = useState<boolean>(false)
+
+    useEffect(() => {
+        return setIsLoading(false)
+    }, [])
 
     return (
         <button 
@@ -19,7 +24,7 @@ const LoadingButton: React.FC<{
             }}
         >
             {isLoading 
-                ? loadingLabel ? `${loadingLabel}...` : `${label}...`
+                ? <i className="fas fa-spinner fa-spin" />
                 : `${label}`
             }
         </button>
