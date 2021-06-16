@@ -3,9 +3,8 @@ import React, { useEffect, useState } from 'react'
 const LoadingButton: React.FC<{
     label: string,
     onClick: () => Promise<unknown>
-    loadingLabel?: string
     className?: string
-}> = ({ label, onClick, loadingLabel = "", className }): JSX.Element => {
+}> = ({ label, onClick, className }): JSX.Element => {
 
     const [isLoading, setIsLoading] = useState<boolean>(false)
 
