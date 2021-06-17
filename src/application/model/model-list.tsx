@@ -4,6 +4,7 @@ import MODEL_API from "../../api/models"
 import AddButton from "../../components/add-buton"
 import { useHistory } from 'react-router-dom'
 import { NotificationMessage, NOTIFICATION_TYPE } from "../../components/notification"
+import IconButton from "../../components/icon-button"
 
 const ModelList: React.FC<{session: ISession}> = ({session}): JSX.Element => {
 
@@ -29,7 +30,7 @@ const ModelList: React.FC<{session: ISession}> = ({session}): JSX.Element => {
             <NotificationMessage message={error} setMessage={setError} type={NOTIFICATION_TYPE.DANGER} />
             
             <ActionList>
-                <AddButton onClick={() => history.push("/create-model")} text={"Create new model"} />
+                <IconButton onClick={() => history.push("/create-model")} label={"Create new model"} iconClass={"fas fa-plus-circle"} />
             </ActionList>
             <div className="card-group">
                 {models && Object.entries(models).map(model => {
@@ -40,12 +41,17 @@ const ModelList: React.FC<{session: ISession}> = ({session}): JSX.Element => {
                             <div className="card-body">
                                 <h5 className="card-title">{modelName}</h5>
                                 <CardText className="card-text">
-                                    <button type="button" className="btn btn-primary">
-                                        <i className="fas fa-book-open" />Tokens
-                                    </button>
-                                    <button type="button" className="btn btn-secondary">
-                                        <i className="far fa-edit" />Model
-                                    </button>
+                                    <IconButton 
+                                        label={"Tokens"} 
+                                        iconClass={"fas fa-book-open"} 
+                                        onClick={undefined}
+                                    />
+                                    <IconButton 
+                                        label={"Model"} 
+                                        iconClass={"far fa-edit"} 
+                                        buttonClass={"btn btn-secondary"}
+                                        onClick={undefined}
+                                    />
                                 </CardText>
                             </div>
                         </Card>
@@ -65,10 +71,6 @@ const ActionList = styled.div`
 const Card = styled.div`
     max-width: 250px;
     min-width: 250px;
-
-    i {
-        margin-right: 10px;
-    }
 `
 
 const CardText = styled.div`

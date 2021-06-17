@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import AddButton from '../../components/add-buton'
+import styled from 'styled-components'
+import MODEL_API from '../../api/models'
+import IconButton from '../../components/icon-button'
 import { TEXT_TYPE } from '../../utils'
 
 const CreateModel: React.FC<{ session: ISession }> = ({session}) => {
@@ -7,6 +9,8 @@ const CreateModel: React.FC<{ session: ISession }> = ({session}) => {
     const createNewField = (): IField => {
         return {name: undefined, type: TEXT_TYPE.SMALL_TEXT, value: undefined}
     }
+    
+    const [fields, setFields] = useState<IField[]>([createNewField()])
 
     const createSelectOptions = () => {
         return (
@@ -22,29 +26,46 @@ const CreateModel: React.FC<{ session: ISession }> = ({session}) => {
         setFields([...newFields])
     }
 
-    const [fields, setFields] = useState([createNewField()])
+    const updateModel = () => {
+        const validFields = fields.filter(f => f.name && f.name != "")
+        // MODEL_API.save()
+    }
 
     return (
         <>
-            <div className="container-fluid" id="container-field">
+            <ActionButtons>
+                <button type="button" className="btn btn-success" onClick={() => updateModel()}>Save</button>
+                <IconButton iconClass={"fas fa-plus-circle"} label={"Add Field"} onClick={() => appendNewField()} />
+            </ActionButtons>
+            <br/>
+
+            <div className="card-group">
                 {fields.map(field => {
                     return (
-                        <div className="row">
-                            <div className="col-10">
-                                <input type="text" className="form-control" placeholder="Field name" value={field.name} />
-                            </div>
-                            <div className="col-2">
-                                <select className="form-select" defaultValue={field.type}>
+                        <Card className="card">
+                            <div className="card-body">
+                                <input type="text" className="form-control" placeholder="Field name" value={field.name} onChange={e => field.name = e.target.value} />
+                            
+                                <select className="form-select" defaultValue={field.type} onChange={e => field.type = e.target.value}>
                                     {createSelectOptions()}
                                 </select>
                             </div>
-                        </div>
+                        </Card>
                     )
                 })}
             </div>
-            <AddButton onClick={() => appendNewField()} />
         </>
     )
 }
 
 export default CreateModel
+
+const ActionButtons = styled.div`
+    button {
+        margin-right: 10px; 
+    }
+`
+
+const Card = styled.div`
+    min-width: 210px;
+`
