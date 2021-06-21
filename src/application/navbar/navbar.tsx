@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 import ActionIcon from '../../components/action-icon'
 import Modal from '../../components/modal'
-import ProfileSettings from '../profile-settings/profile-settings'
+import ProfileSettings from '../profile-settings/settings'
 
 const Navbar: React.FC<{ 
     session: ISession, 

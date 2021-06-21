@@ -13,6 +13,7 @@ const ProfileSettings: React.FC<{
     setSession: (session: ISession | undefined) => Promise<void> 
 }> = ({session, setSession}) => {
 
+    console.log('session: ', session)
     const [username, setUsername] = useState<string>(session.username)
     const [editUsername, setEditUsername] = useState<boolean>(false)
     const [usernameExists, setUsernameExists] = useState<boolean>(false)
@@ -27,7 +28,7 @@ const ProfileSettings: React.FC<{
         USER_API.updateUser(session.username, sha256(password), username)
             .then(res => {
                 if(res == 200) {
-                    setSession({ username: username, password: password })
+                    setSession({ id: session.id, username: username, password: password })
                     setNotification({
                         message: "Settings updated successfully! :)",
                         type: NOTIFICATION_TYPE.SUCCESS

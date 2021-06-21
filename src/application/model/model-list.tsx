@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react"
 import styled from "styled-components"
 import MODEL_API from "../../api/models"
-import AddButton from "../../components/add-buton"
 import { useHistory } from 'react-router-dom'
 import { NotificationMessage, NOTIFICATION_TYPE } from "../../components/notification"
 import IconButton from "../../components/icon-button"
@@ -32,6 +31,7 @@ const ModelList: React.FC<{session: ISession}> = ({session}): JSX.Element => {
             <ActionList>
                 <IconButton onClick={() => history.push("/create-model")} label={"Create new model"} iconClass={"fas fa-plus-circle"} />
             </ActionList>
+
             <div className="card-group">
                 {models && Object.entries(models).map(model => {
                     const modelName = model[0]

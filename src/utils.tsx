@@ -7,7 +7,7 @@ const TEXT_TYPE = {
 }
 
 const BASE_URL = 'https://token-generator-api.herokuapp.com/tg'
-const DEFAULT_HEADER = { 'Content-Type': 'application/json' }
+const DEFAULT_HEADER = { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
 
 export {
     TEXT_TYPE,

@@ -1,14 +1,24 @@
-import  { BASE_URL } from '../utils'
+import  { BASE_URL, DEFAULT_HEADER } from '../utils'
 
-const MODELS_URL = 'model'
+const MODELS_URL = `${BASE_URL}/model`
 
-const getAllModelsFromUser = (username: String) => {
-    return fetch(`${BASE_URL}/${username}/${MODELS_URL}/`)
+const getAllModelsByUser = (userId: string) => {
+    return fetch(`${MODELS_URL}/user/${userId}`)
         .then(data => data.json())
 }
 
+const saveModel = (username: string, model: IModel) => {
+    return fetch(`${BASE_URL}/${username}/${MODELS_URL}/${model.name}`, {
+        method: 'POST',
+        headers: DEFAULT_HEADER,
+        body: JSON.stringify(model)
+    })
+        .then(data => data.status)
+}
+
 const MODEL_API = {
-    models: getAllModelsFromUser
+    models: getAllModelsByUser,
+    save: saveModel
 }
 
 export default MODEL_API

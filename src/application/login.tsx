@@ -4,15 +4,11 @@ import styled from 'styled-components'
 import { NotificationMessage, NOTIFICATION_TYPE } from '../components/notification'
 import LoadingButton from '../components/loading-button'
 
-const Login: 
-    React.FC<{ setSession: (session: ISession) => Promise<void>}> = 
-    ({ setSession }): JSX.Element => {
+const Login: React.FC<{ setSession: (session: ISession) => Promise<void>}> = ({ setSession }): JSX.Element => {
 
     const login = (): Promise<void> => {
-        return setSession({ username: username, password: password })
-            .catch(e => {
-                setErrorMessage("Invalid username/password")
-            })
+        return setSession({ id: undefined, username: username, password: password })
+            .catch(e => { setErrorMessage("Invalid username/password")})
     }
 
     const [username, setUsername] = useState<string>()

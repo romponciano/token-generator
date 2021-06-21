@@ -2,6 +2,7 @@ export {}
 
 declare global {
     interface ISession {
+        id: string,
         username: string, 
         password: string
     }
@@ -13,11 +14,16 @@ declare global {
     }
 
     interface IModel {
-        fields: List<IField>,
-        tokens: List<IToken>?
+        id: string,
+        name: string,
+        userId: string,
+        fields: List<IField>
     }
 
     interface IToken {
-        token: List<IField>
+        id: string,
+        userId: string,
+        modelId: string,
+        fields: List<IField>
     }
 }

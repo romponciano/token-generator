@@ -11,6 +11,7 @@ const CreateModel: React.FC<{ session: ISession }> = ({session}) => {
     }
     
     const [fields, setFields] = useState<IField[]>([createNewField()])
+    const [modelName, setModelName] = useState<string>(undefined)
 
     const createSelectOptions = () => {
         return (
@@ -28,16 +29,36 @@ const CreateModel: React.FC<{ session: ISession }> = ({session}) => {
 
     const updateModel = () => {
         const validFields = fields.filter(f => f.name && f.name != "")
-        // MODEL_API.save()
+        const model: IModel = { id: null, userId: session.id, name: modelName, fields: validFields }
+        MODEL_API.save(session.username, model)
+            .then(res => {
+                console.log(res)
+            })
     }
 
     return (
         <>
             <ActionButtons>
-                <button type="button" className="btn btn-success" onClick={() => updateModel()}>Save</button>
+                <button 
+                    disabled={modelName == undefined || modelName == ''} 
+                    type="button" 
+                    className="btn btn-success" 
+                    onClick={() => updateModel()}
+                >
+                    Save
+                </button>
                 <IconButton iconClass={"fas fa-plus-circle"} label={"Add Field"} onClick={() => appendNewField()} />
             </ActionButtons>
             <br/>
+            
+            <div className="form-row">
+                <div className="input-group">
+                    <div className="input-group-prepend">
+                        <div className="input-group-text">Model Name</div>
+                    </div>
+                    <input type="text" className="form-control" placeholder="Model name" onChange={e => setModelName(e.target.value)} />
+                </div>
+            </div>
 
             <div className="card-group">
                 {fields.map(field => {
