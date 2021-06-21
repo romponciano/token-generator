@@ -30,7 +30,7 @@ const CreateModel: React.FC<{ session: ISession }> = ({session}) => {
     const updateModel = () => {
         const validFields = fields.filter(f => f.name && f.name != "")
         const model: IModel = { id: null, userId: session.id, name: modelName, fields: validFields }
-        MODEL_API.save(session.username, model)
+        MODEL_API.save(model)
             .then(res => {
                 console.log(res)
             })

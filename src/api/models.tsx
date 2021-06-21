@@ -7,8 +7,8 @@ const getAllModelsByUser = (userId: string) => {
         .then(data => data.json())
 }
 
-const saveModel = (username: string, model: IModel) => {
-    return fetch(`${BASE_URL}/${username}/${MODELS_URL}/${model.name}`, {
+const saveModel = (model: IModel) => {
+    return fetch(`${MODELS_URL}/`, {
         method: 'POST',
         headers: DEFAULT_HEADER,
         body: JSON.stringify(model)
