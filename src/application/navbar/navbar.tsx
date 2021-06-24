@@ -1,10 +1,8 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import ActionIcon from '../../components/action-icon'
 import Modal from '../../components/modal'
 import ProfileSettings from '../profile-settings/settings'
-
-var display = 'none'
 
 const Navbar: React.FC<{ 
     session: ISession, 
@@ -13,10 +11,26 @@ const Navbar: React.FC<{
 
     const [showSettings, setShowSettings] = useState<boolean>(false)
     
-    const toggleDropdown = (close?: boolean) => {
-        if(close) display = 'none'
-        else display = display == 'none' ? 'inherit' : 'none'
+    const toggleDropdown = (close: boolean = false) => {
+        const element = document.getElementById('userOptionsDropdown')
+        if(close || element.style.display == 'inherit') {
+            element.style.display = 'none'
+            document.removeEventListener('click', (evt) => autoCloseDropdown(evt))
+        } else {
+            element.style.display = 'inherit'
+            document.addEventListener('click', (evt) => autoCloseDropdown(evt))
+        }
     }
+
+    const autoCloseDropdown = (evt: MouseEvent): void => {
+        const element = document.getElementById('userOptionsDropdown')
+        const iconElement = document.getElementsByClassName('fas fa-user fa-2x')[0]
+        if(evt.target != element && evt.target != iconElement) toggleDropdown(true)
+    }
+
+    useEffect(() => {
+        return document.removeEventListener('click', (evt) => autoCloseDropdown(evt))
+    }, [])
 
     return (
         <nav className="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
@@ -38,13 +52,13 @@ const Navbar: React.FC<{
                     <button className="btn btn-outline-light my-2 my-sm-0" type="submit">Search</button>
                     <ProfileIcon className="dropdown">
                         <ActionIcon className="fas fa-user fa-2x" onClick={() => toggleDropdown()} />
-                        <DropdownMenu className="dropdown-menu">
-                            <a className="dropdown-item" href="#" onClick={() => {
+                        <DropdownMenu id="userOptionsDropdown" className="dropdown-menu">
+                            <div className="dropdown-item" onClick={() => {
                                 setShowSettings(true)
                                 toggleDropdown(true)
                             }}>
                                 <i className="fas fa-tools" />Settings
-                            </a>
+                            </div>
                             <a className="dropdown-item" href="/" onClick={() => setSession(undefined)}>
                                 <i className="fas fa-sign-out-alt" />Logout
                             </a>
@@ -76,8 +90,9 @@ const ProfileIcon = styled.div`
 `
 
 const DropdownMenu = styled.div`
-    display: ${display};
+    display: none;
     left: -130px;
+    cursor: pointer;
 
     i {
         margin-right: 10px;
