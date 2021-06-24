@@ -23,7 +23,7 @@ const EditModel: React.FC<{ session: ISession, model?: IModel }> = ({session, mo
     }
 
     const appendNewField = () => {
-        const newFields = [...fields]
+        const newFields = fields ? [...fields] : []
         newFields.push(createNewField())
         setFields([...newFields])
     }
@@ -72,7 +72,7 @@ const EditModel: React.FC<{ session: ISession, model?: IModel }> = ({session, mo
             </div>
 
             <div className="card-group">
-                {fields.map(field => {
+                {fields?.map(field => {
                     return (
                         <Card className="card">
                             <div className="card-body">
