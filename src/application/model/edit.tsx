@@ -7,17 +7,10 @@ import { TEXT_TYPE } from '../../utils'
 
 const EditModel: React.FC<{ session: ISession, model?: IModel }> = ({session, model}) => {
 
-    console.log('models: ', model)
-
     const createNewField = (): IField => {
         return {name: undefined, type: TEXT_TYPE.SMALL_TEXT, value: undefined}
     }
-
-    useEffect(() => {
-        console.log('models: ', model)
-        console.log('fields: ', fields)
-    }, [])
-    
+   
     const [fields, setFields] = useState<IField[]>(model?.fields)
     const [modelName, setModelName] = useState<string>(model?.name)
 
