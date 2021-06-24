@@ -2,7 +2,7 @@ import React, { MouseEvent } from 'react'
 import styled from 'styled-components'
 
 const IconButton: React.FC<{
-    label: string,
+    label?: string,
     iconClass: string,
     onClick: (event: MouseEvent) => unknown
     buttonClass?: string

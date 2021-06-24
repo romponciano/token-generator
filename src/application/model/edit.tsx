@@ -39,6 +39,11 @@ const EditModel: React.FC<{ session: ISession, model?: IModel }> = ({session, mo
             })
     }
 
+    const updateField = (name: string, newName: string) => {
+        fields.forEach(f => { if(f.name == name) f.name = newName })
+        setFields([...fields])
+    }
+
     return (
         <>
             <NotificationMessage 
@@ -48,6 +53,7 @@ const EditModel: React.FC<{ session: ISession, model?: IModel }> = ({session, mo
             />
 
             <ActionButtons>
+                <IconButton iconClass={"fas fa-arrow-left"} onClick={() => history.back()} />
                 <button 
                     disabled={modelName == undefined || modelName == ''} 
                     type="button" 
@@ -65,7 +71,7 @@ const EditModel: React.FC<{ session: ISession, model?: IModel }> = ({session, mo
                     <div className="input-group-prepend">
                         <div className="input-group-text">Model Name</div>
                     </div>
-                    <input type="text" className="form-control" placeholder="Model name" onChange={e => setModelName(e.target.value)} />
+                    <input type="text" className="form-control" placeholder="Model name" value={modelName} onChange={e => setModelName(e.target.value)} />
                 </div>
             </div>
 
@@ -74,7 +80,7 @@ const EditModel: React.FC<{ session: ISession, model?: IModel }> = ({session, mo
                     return (
                         <Card className="card">
                             <div className="card-body">
-                                <input type="text" className="form-control" placeholder="Field name" value={field.name} onChange={e => field.name = e.target.value} />
+                                <input type="text" className="form-control" placeholder="Field name" value={field.name} onChange={e => updateField(field.name, e.target.value)} />
                             
                                 <select className="form-select" defaultValue={field.type} onChange={e => field.type = e.target.value}>
                                     {createSelectOptions()}
