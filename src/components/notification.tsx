@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 
 const NOTIFICATION_TYPE = {
@@ -15,10 +15,16 @@ const NotificationMessage: React.FC<{
 
     const fullClass = `notification alert alert-${type}`
 
+    if(message && type == NOTIFICATION_TYPE.SUCCESS) {
+        setTimeout(() => {
+            if(message) setMessage(undefined)
+        }, 2500)
+    }
+
     return(
         <>
             {message ? 
-                <StyledNotification>
+                <StyledNotification id="notification">
                     <div className={fullClass}>
                         <p>{message}</p>
                         <i className="fas fa-times" onClick={() => setMessage(undefined)} />
@@ -36,11 +42,9 @@ export {
 
 const StyledNotification = styled.div`
     position: absolute;
-    zIndex: 1000;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    boxShadow: 4px 4px 10px -4px rgba(0,0,0,0.58);
+    z-index: 5000;
+    right: 1%;
+    top: 1;
 
     .alert {
         height: 45px;
