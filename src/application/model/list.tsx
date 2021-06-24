@@ -14,15 +14,14 @@ const ModelList: React.FC<{session: ISession}> = ({session}): JSX.Element => {
 
     useEffect(() => {
         loadModelsFromLoggedUser()
-    }, [session])
+    }, [])
 
-    const loadModelsFromLoggedUser = async () => {
+    const loadModelsFromLoggedUser = () => {
         MODEL_API
             .models(session.id)
             .then(response => {
-                const status = response?.status
-                if(status && status >= 500) throw Error("Internal error")
-                else if(!status) setModels(response)
+                if(!response) throw Error("Internal error")
+                setModels(response)
             })
             .catch(e => setError(`Can't retrieve your models`))
     }
@@ -37,7 +36,8 @@ const ModelList: React.FC<{session: ISession}> = ({session}): JSX.Element => {
 
             <div className="card-group">
                 {models && Object.entries(models).map(model => {
-                    const modelName = model[1].name
+                    const m: IModel = model[1]
+                    const modelName = m.name
                     return (
                         <Card className="card" key={modelName}>
                             <img className="card-img-top" src="https://e1.pngegg.com/pngimages/671/678/png-clipart-one-piece-jolly-roger-dock-and-folder-icons-by-luffy-jolly-roger-straw-hat-pirates-logo-thumbnail.png" alt={modelName} />
@@ -53,7 +53,7 @@ const ModelList: React.FC<{session: ISession}> = ({session}): JSX.Element => {
                                         label={"Model"} 
                                         iconClass={"far fa-edit"} 
                                         buttonClass={"btn btn-secondary"}
-                                        onClick={undefined}
+                                        onClick={() => history.push(`/model/${m.id}`)}
                                     />
                                 </CardText>
                             </div>

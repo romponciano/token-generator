@@ -2,16 +2,24 @@ import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import MODEL_API from '../../api/models'
 import IconButton from '../../components/icon-button'
+import { NotificationMessage } from '../../components/notification'
 import { TEXT_TYPE } from '../../utils'
 
-const CreateModel: React.FC<{ session: ISession }> = ({session}) => {
+const EditModel: React.FC<{ session: ISession, model?: IModel }> = ({session, model}) => {
+
+    console.log('models: ', model)
 
     const createNewField = (): IField => {
         return {name: undefined, type: TEXT_TYPE.SMALL_TEXT, value: undefined}
     }
+
+    useEffect(() => {
+        console.log('models: ', model)
+        console.log('fields: ', fields)
+    }, [])
     
-    const [fields, setFields] = useState<IField[]>([createNewField()])
-    const [modelName, setModelName] = useState<string>(undefined)
+    const [fields, setFields] = useState<IField[]>(model?.fields)
+    const [modelName, setModelName] = useState<string>(model?.name)
 
     const createSelectOptions = () => {
         return (
@@ -27,10 +35,12 @@ const CreateModel: React.FC<{ session: ISession }> = ({session}) => {
         setFields([...newFields])
     }
 
+    const [notification, setNotification] = useState<{type: string, msg: string}>(undefined)
+
     const updateModel = () => {
         const validFields = fields.filter(f => f.name && f.name != "")
-        const model: IModel = { id: null, userId: session.id, name: modelName, fields: validFields }
-        MODEL_API.save(model)
+        const newModel: IModel = { id: model?.id, userId: session.id, name: modelName, fields: validFields }
+        MODEL_API.save(newModel)
             .then(res => {
                 console.log(res)
             })
@@ -38,6 +48,12 @@ const CreateModel: React.FC<{ session: ISession }> = ({session}) => {
 
     return (
         <>
+            <NotificationMessage 
+                message={notification?.msg} 
+                setMessage={(value: string) => setNotification({type: notification?.type, msg: value})}
+                type={notification?.type}
+            />
+
             <ActionButtons>
                 <button 
                     disabled={modelName == undefined || modelName == ''} 
@@ -79,7 +95,7 @@ const CreateModel: React.FC<{ session: ISession }> = ({session}) => {
     )
 }
 
-export default CreateModel
+export default EditModel
 
 const ActionButtons = styled.div`
     button {

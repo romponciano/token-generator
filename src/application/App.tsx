@@ -1,18 +1,26 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { HashRouter, Route, Switch } from 'react-router-dom'
 import styled from 'styled-components'
-import CreateModel from './model/create-model'
+import EditModel from './model/edit'
 import Login from './login'
 import useSession from '../hooks/useSession'
-import ModelList from './model/model-list'
+import ModelList from './model/list'
 import Navbar from './navbar/navbar'
+import useModel from '../hooks/useModel'
+import MODEL_API from '../api/models'
 
 const App = () => {
 
     const { session, setSession } = useSession()
+    const { models, setModels } = useModel()
 
     if(!session) {
         return <Login setSession={setSession} />
+    } else {
+        MODEL_API.models(session.id)
+        .then(resp => {
+            if(resp) setModels(resp)
+        })
     }
 
     return (
@@ -32,8 +40,16 @@ const App = () => {
                                         </Route>
 
                                         <Route exact path={`/create-model`}>
-                                            <CreateModel session={session} />
+                                            <EditModel session={session} />
                                         </Route>
+
+                                        {models.map(m => {
+                                            return (
+                                                <Route exact path={`/model/${m.id}`}>
+                                                    <EditModel session={session} model={m} />
+                                                </Route>
+                                            )
+                                        })}
                                     </>
                                 )
                             }} />

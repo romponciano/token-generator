@@ -4,28 +4,19 @@ import ActionIcon from '../../components/action-icon'
 import Modal from '../../components/modal'
 import ProfileSettings from '../profile-settings/settings'
 
+var display = 'none'
+
 const Navbar: React.FC<{ 
     session: ISession, 
     setSession: (session: ISession | undefined) => Promise<void> 
 }> = ({session, setSession}) => {
 
     const [showSettings, setShowSettings] = useState<boolean>(false)
-
-    const [display, setDisplay] = useState('none')
     
     const toggleDropdown = (close?: boolean) => {
-        if(close) setDisplay('none')
-        else setDisplay(display == 'none' ? 'inherit' : 'none')
+        if(close) display = 'none'
+        else display = display == 'none' ? 'inherit' : 'none'
     }
-
-    const DropdownMenu = styled.div`
-        display: ${display};
-        left: -130px;
-
-        i {
-            margin-right: 10px;
-        }
-    `
 
     return (
         <nav className="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
@@ -82,4 +73,13 @@ const RightDiv = styled.div`
 const ProfileIcon = styled.div`
     color: white;
     margin-left: 20px;
+`
+
+const DropdownMenu = styled.div`
+    display: ${display};
+    left: -130px;
+
+    i {
+        margin-right: 10px;
+    }
 `

@@ -4,7 +4,14 @@ const MODELS_URL = `${BASE_URL}/model`
 
 const getAllModelsByUser = (userId: string) => {
     return fetch(`${MODELS_URL}/user/${userId}`)
-        .then(data => data.json())
+        .then(data => {
+            const status = data.status
+            const response = data.json()
+            if(status == 200) return response
+            if(status >= 500) throw Error("Internal error")
+            return undefined
+        })
+        .catch(e => undefined)
 }
 
 const saveModel = (model: IModel) => {
