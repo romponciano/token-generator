@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import MODEL_API from '../../api/models'
 import IconButton from '../../components/icon-button'
-import { NotificationMessage } from '../../components/notification'
+import LoadingButton from '../../components/loading-button'
 import { TEXT_TYPE } from '../../utils'
 
 const EditModel: React.FC<{ session: ISession, model?: IModel }> = ({session, model}) => {
@@ -28,15 +28,12 @@ const EditModel: React.FC<{ session: ISession, model?: IModel }> = ({session, mo
         setFields([...newFields])
     }
 
-    const [notification, setNotification] = useState<{type: string, msg: string}>(undefined)
-
     const updateModel = () => {
         const validFields = fields.filter(f => f.name && f.name != "")
         const newModel: IModel = { id: model?.id, userId: session.id, name: modelName, fields: validFields }
-        MODEL_API.save(newModel)
-            .then(res => {
-                console.log(res)
-            })
+        MODEL_API
+            .save(newModel)
+            .then(res => { if(res != 200) throw Error("Can't update :(") })
     }
 
     const updateField = (name: string, newName: string) => {
@@ -46,22 +43,21 @@ const EditModel: React.FC<{ session: ISession, model?: IModel }> = ({session, mo
 
     return (
         <>
-            <NotificationMessage 
-                message={notification?.msg} 
-                setMessage={(value: string) => setNotification({type: notification?.type, msg: value})}
-                type={notification?.type}
-            />
-
             <ActionButtons>
                 <IconButton iconClass={"fas fa-arrow-left"} onClick={() => history.back()} />
-                <button 
-                    disabled={modelName == undefined || modelName == ''} 
-                    type="button" 
+                <LoadingButton 
+                    isDisabled={modelName == undefined || modelName == ''} 
                     className="btn btn-success" 
-                    onClick={() => updateModel()}
-                >
-                    Save
-                </button>
+                    onClick={() => 
+                        new Promise<void>((resolve) => {
+                            updateModel()
+                            resolve()
+                        }
+                    )}
+                    label="Save"
+                    success="Model saved successfully \o/"
+                    fail="Can't save your model :("
+                />
                 <IconButton iconClass={"fas fa-plus-circle"} label={"Add Field"} onClick={() => appendNewField()} />
             </ActionButtons>
             <br/>
