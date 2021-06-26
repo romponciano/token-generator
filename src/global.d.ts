@@ -15,6 +15,7 @@ declare global {
 
     interface IModel {
         id: string,
+        image: string,
         name: string,
         userId: string,
         fields: List<IField>

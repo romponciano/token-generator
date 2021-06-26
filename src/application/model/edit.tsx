@@ -13,6 +13,7 @@ const EditModel: React.FC<{ session: ISession, model?: IModel }> = ({session, mo
    
     const [fields, setFields] = useState<IField[]>(model?.fields)
     const [modelName, setModelName] = useState<string>(model?.name)
+    const [modelImage, setModelImage] = useState<string>(model?.image)
 
     const createSelectOptions = () => {
         return (
@@ -30,7 +31,13 @@ const EditModel: React.FC<{ session: ISession, model?: IModel }> = ({session, mo
 
     const updateModel = () => {
         const validFields = fields.filter(f => f.name && f.name != "")
-        const newModel: IModel = { id: model?.id, userId: session.id, name: modelName, fields: validFields }
+        const newModel: IModel = { 
+            id: model?.id, 
+            image: modelImage,
+            userId: session.id, 
+            name: modelName, 
+            fields: validFields 
+        }
         MODEL_API
             .save(newModel)
             .then(res => { if(res != 200) throw Error("Can't update :(") })
@@ -40,6 +47,18 @@ const EditModel: React.FC<{ session: ISession, model?: IModel }> = ({session, mo
         fields.forEach(f => { if(f.name == name) f.name = newName })
         setFields([...fields])
     }
+
+    const updateModelImage = () => {
+        const file = (document.getElementById("modelImage") as HTMLInputElement).files[0]
+        toBase64(file).then(res => setModelImage(res))
+    }
+
+    const toBase64 = (file: Blob) => new Promise<string>((resolve, reject) => {
+        const reader = new FileReader()
+        reader.readAsDataURL(file)
+        reader.onload = () => resolve(reader.result as string)
+        reader.onerror = error => reject(error)
+    })
 
     return (
         <>
@@ -71,6 +90,20 @@ const EditModel: React.FC<{ session: ISession, model?: IModel }> = ({session, mo
                 </div>
             </div>
 
+            <ImageBox>
+                {modelImage && <img src={modelImage} alt={model?.name} width="250px" height="250px" />}
+                <label htmlFor="modelImage" className="btn btn-primary">
+                    <i className="fas fa-folder-open" />
+                </label>
+                <input 
+                    id="modelImage"
+                    type="file" 
+                    accept="image/png, image/jpeg" 
+                    multiple={false}
+                    onChange={() => updateModelImage()}
+                />
+            </ImageBox>
+
             <div className="card-group">
                 {fields?.map(field => {
                     return (
@@ -100,4 +133,14 @@ const ActionButtons = styled.div`
 
 const Card = styled.div`
     min-width: 210px;
+`
+
+const ImageBox = styled.div`
+    label {
+        cursor: pointer;
+    }
+
+    input {
+        display: none;
+    }
 `

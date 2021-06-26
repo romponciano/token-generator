@@ -3,6 +3,7 @@ const TEXT_TYPE = {
     TEXT_BOX: "text-box",
     NUMBER: "number",
     SELECT: "select",
+    MIN_MAX: "min-max",
     CALC: "calc"
 }
 
