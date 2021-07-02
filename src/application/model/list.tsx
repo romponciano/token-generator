@@ -47,6 +47,20 @@ const ModelList: React.FC<{session: ISession}> = ({session}): JSX.Element => {
             })
     }
 
+    if(!models) {
+        return (
+            <div style={{ "textAlign": "center" }}>
+                <i className="fas fa-dice-d20 fa-10x" />
+                <h3>You don't have any model yet</h3>
+
+                <br/>
+                <br/>
+
+                <IconButton onClick={() => history.push("/create-model")} label={"Create new model"} iconClass={"fas fa-plus-circle"} />
+            </div>
+        )
+    }
+
     return (
         <>
             <NotificationMessage message={notification.msg} setMessage={(value) => setNotification({msg: value, type: notification.type})} type={notification.type} />
