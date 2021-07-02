@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 import MODEL_API from '../../api/models'
 import IconButton from '../../components/icon-button'
@@ -67,11 +67,11 @@ const EditModel: React.FC<{ session: ISession, model?: IModel }> = ({session, mo
                             resolve()
                         }
                     )}
-                    label="Save"
+                    label="Save Model"
                     success="Model saved successfully \o/"
                     fail="Can't save your model :("
                 />
-                <IconButton iconClass={"fas fa-plus-circle"} label={"Add Field"} onClick={() => appendNewField()} />
+                <div className="observation">*All fields without a name will be ignored and not saved.</div>
             </ActionButtons>
 
             <br/>
@@ -81,28 +81,31 @@ const EditModel: React.FC<{ session: ISession, model?: IModel }> = ({session, mo
                     <div className="input-group-prepend">
                         <div className="input-group-text">Model Name</div>
                     </div>
-                    <input type="text" className="form-control" placeholder="Model name" value={modelName} onChange={e => setModelName(e.target.value)} />
+                    <input type="text" className="form-control" placeholder="Model name" 
+                        value={modelName} 
+                        onChange={e => setModelName(e.target.value)}
+                    />
                 </div>
             </div>
 
-            <Fields>
-                <div className="card-columns">
-                    <div className="card">
-                        <div className="card-body">
-                            <ImageUploader 
-                                id="modelImage"
-                                image={modelImage}
-                                imageClass="card-img-top" 
-                                defaultImage={NO_IMAGE}
-                                alt={modelName}
-                                onUpload={() => updateModelImage()}
-                                onDelete={setModelImage}
-                                imgHeight="250px"
-                                imgWidth="250px"
-                            />
-                            </div>
-                        </div>
+            <div className="d-flex">
+                <div>
+                    <ImageUploader 
+                        id="modelImage" 
+                        image={modelImage}
+                        defaultImage={NO_IMAGE} 
+                        alt={modelName}
+                        onUpload={() => updateModelImage()} 
+                        onDelete={setModelImage}
+                        imgHeight="250px" 
+                        imgWidth="250px"
+                    />
+                    <FieldsAction className="card">
+                        <IconButton iconClass={"fas fa-plus-circle"} label={"Add Field"} onClick={() => appendNewField()} />
+                    </FieldsAction>
+                </div>
 
+                <Fields className="card-columns">
                     {fields?.map(field => {
                         return (
                             <div className="card">
@@ -116,8 +119,8 @@ const EditModel: React.FC<{ session: ISession, model?: IModel }> = ({session, mo
                             </div>
                         )
                     })}
-                </div>
-            </Fields>
+                </Fields>
+            </div>
         </>
     )
 }
@@ -126,30 +129,36 @@ export default EditModel
 
 const Fields = styled.div`
     @media (min-width: 576px) { .card-columns { column-count: 2; } }
-
     @media (min-width: 768px) { .card-columns { column-count: 3; } }
-
     @media (min-width: 992px) { .card-columns { column-count: 4; } }
-
     @media (min-width: 1200px) { .card-columns { column-count: 5; } }
-
     @media (min-width: 1800px) { .card-columns { column-count: 9; } }
 
-    .card-columns {    
-        column-break-inside: avoid;
-    }
-    
-    .card {
-        display: inline-block;
+    column-break-inside: avoid;
+
+    .card { 
+        display: inline-block; 
     }
 
-    input {
-        font-weight: bold;
+    input { 
+        font-weight: bold; 
+        width: 205px;
     }
 `
 
+const FieldsAction = styled.div`
+    text-align: center;
+    margin-top: 15px;
+`
+
 const ActionButtons = styled.div`
-    button {
-        margin-right: 10px; 
+    display: flex;
+
+    button { 
+        margin-right: 10px;  
+    }
+
+    .observation {
+        margin-block: auto;
     }
 `
