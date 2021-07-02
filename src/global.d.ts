@@ -8,6 +8,7 @@ declare global {
     }
 
     interface IField {
+        order: number,
         name: string,
         type: string,
         value: unknown

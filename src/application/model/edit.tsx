@@ -8,13 +8,25 @@ import { NO_IMAGE, TEXT_TYPE, toBase64 } from '../../utils'
 
 const EditModel: React.FC<{ session: ISession, model?: IModel }> = ({session, model}) => {
 
-    const createNewField = (): IField => {
-        return {name: undefined, type: TEXT_TYPE.SMALL_TEXT, value: undefined}
-    }
-   
     const [fields, setFields] = useState<IField[]>(model?.fields)
     const [modelName, setModelName] = useState<string>(model?.name)
     const [modelImage, setModelImage] = useState<string>(model?.image)
+    const [order, setOrder] = useState<number>(
+        fields[fields?.length]?.order 
+            ? fields[fields?.length]?.order 
+            : 0
+    )
+
+    const createNewField = (): IField => {
+        const out: IField = {
+            order: order, 
+            name: undefined, 
+            type: TEXT_TYPE.SMALL_TEXT, 
+            value: undefined
+        }
+        setOrder(order+1)
+        return out;
+    }
 
     const createSelectOptions = () => {
         return (
@@ -44,8 +56,8 @@ const EditModel: React.FC<{ session: ISession, model?: IModel }> = ({session, mo
             .then(res => { if(res != 200) throw Error("Can't update :(") })
     }
 
-    const updateField = (name: string, newName: string) => {
-        fields.forEach(f => { if(f.name == name) f.name = newName })
+    const updateField = (order: number, newName: string) => {
+        fields.forEach(f => { if(f.order == order) f.name = newName })
         setFields([...fields])
     }
 
@@ -101,18 +113,29 @@ const EditModel: React.FC<{ session: ISession, model?: IModel }> = ({session, mo
                         imgWidth="250px"
                     />
                     <FieldsAction className="card">
-                        <IconButton iconClass={"fas fa-plus-circle"} label={"Add Field"} onClick={() => appendNewField()} />
+                        <IconButton iconClass={"fas fa-plus-circle"} 
+                            label={"Add Field"} 
+                            onClick={() => appendNewField()} 
+                        />
                     </FieldsAction>
                 </div>
 
                 <Fields className="card-columns">
                     {fields?.map(field => {
                         return (
-                            <div className="card">
+                            <div className="card" key={field.order}>
                                 <div className="card-body">
-                                    <input type="text" className="form-control" placeholder="Field name" value={field.name} onChange={e => updateField(field.name, e.target.value)} />
+                                    <input type="text" 
+                                        className="form-control" 
+                                        placeholder="Field name" 
+                                        value={field.name} 
+                                        onChange={e => updateField(field.order, e.target.value)} 
+                                    />
                                 
-                                    <select className="form-select" defaultValue={field.type} onChange={e => field.type = e.target.value}>
+                                    <select className="form-select" 
+                                        defaultValue={field.type} 
+                                        onChange={e => field.type = e.target.value}
+                                    >
                                         {createSelectOptions()}
                                     </select>
                                 </div>
