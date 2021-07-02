@@ -9,6 +9,7 @@ const TEXT_TYPE = {
 
 const BASE_URL = 'https://token-generator-api.herokuapp.com/tg'
 const DEFAULT_HEADER = { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+const NOT_FOUND_HTTP = 204
 
 const toBase64 = (file: Blob) => new Promise<string>((resolve, reject) => {
     const reader = new FileReader()
@@ -24,5 +25,6 @@ export {
     BASE_URL,
     DEFAULT_HEADER,
     NO_IMAGE,
-    toBase64
+    toBase64,
+    NOT_FOUND_HTTP
 }

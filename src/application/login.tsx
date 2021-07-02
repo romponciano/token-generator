@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { sha256 } from 'js-sha256'
 import styled from 'styled-components'
 import { NotificationMessage, NOTIFICATION_TYPE } from '../components/notification'
 import LoadingButton from '../components/loading-button'

@@ -12,7 +12,7 @@ const EditModel: React.FC<{ session: ISession, model?: IModel }> = ({session, mo
     const [modelName, setModelName] = useState<string>(model?.name)
     const [modelImage, setModelImage] = useState<string>(model?.image)
     const [order, setOrder] = useState<number>(
-        fields[fields?.length]?.order 
+        (fields && fields[fields?.length]?.order)
             ? fields[fields?.length]?.order 
             : 0
     )
@@ -43,7 +43,7 @@ const EditModel: React.FC<{ session: ISession, model?: IModel }> = ({session, mo
     }
 
     const updateModel = () => {
-        const validFields = fields.filter(f => f.name && f.name != "")
+        const validFields = fields?.filter(f => f.name && f.name != "")
         const newModel: IModel = { 
             id: model?.id, 
             image: modelImage,
@@ -57,7 +57,7 @@ const EditModel: React.FC<{ session: ISession, model?: IModel }> = ({session, mo
     }
 
     const updateField = (order: number, newName: string) => {
-        fields.forEach(f => { if(f.order == order) f.name = newName })
+        fields?.forEach(f => { if(f.order == order) f.name = newName })
         setFields([...fields])
     }
 

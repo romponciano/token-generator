@@ -4,12 +4,16 @@ import MODEL_API from "../../api/models"
 import { useHistory } from 'react-router-dom'
 import { NotificationMessage, NOTIFICATION_TYPE } from "../../components/notification"
 import IconButton from "../../components/icon-button"
-import { NO_IMAGE } from "../../utils"
+import { NOT_FOUND_HTTP, NO_IMAGE } from "../../utils"
+import Modal from "../../components/modal"
+import LoadingButton from "../../components/loading-button"
 
 const ModelList: React.FC<{session: ISession}> = ({session}): JSX.Element => {
 
     const [models, setModels] = useState<Map<string, IModel>>()
-    const [error, setError] = useState<string>(undefined)
+    const [notification, setNotification] = useState<{msg: string, type: string}>({ msg: undefined, type: NOTIFICATION_TYPE.DANGER })
+    const [confirmDelete, setConfirmDelete] = useState<boolean>(false)
+    const [selectedModel, setSelectedModel] = useState<string>()
 
     const history = useHistory()
 
@@ -21,15 +25,64 @@ const ModelList: React.FC<{session: ISession}> = ({session}): JSX.Element => {
         MODEL_API
             .models(session.id)
             .then(response => {
-                if(!response) throw Error("Internal error")
-                setModels(response)
+                if(response == NOT_FOUND_HTTP) setModels(undefined)
+                else setModels(response)
             })
-            .catch(e => setError(`Can't retrieve your models`))
+            .catch(e => setNotification({msg: `Can't retrieve your models`, type: NOTIFICATION_TYPE.DANGER}))
+    }
+
+    const removeModel = () => {
+        MODEL_API
+            .delete(selectedModel)
+            .then(() => {
+                console.log('Models antigo: ', models)
+                const newMap = new Map(models)
+                newMap.delete(selectedModel)
+                console.log('Models novo: ', newMap)
+                setModels(newMap)
+                setNotification({msg: "Model deleted successfully o/", type: NOTIFICATION_TYPE.SUCCESS})
+            })
+            .catch(() => {
+                setNotification({msg: "I'm sorry. Can't delete your model now :'(", type: NOTIFICATION_TYPE.DANGER})
+            })
     }
 
     return (
         <>
-            <NotificationMessage message={error} setMessage={setError} type={NOTIFICATION_TYPE.DANGER} />
+            <NotificationMessage message={notification.msg} setMessage={(value) => setNotification({msg: value, type: notification.type})} type={notification.type} />
+
+            <Modal 
+                show={confirmDelete}
+                setShow={setConfirmDelete}
+                title={<p>Delete Confirmation</p>}
+                body={<p>Do you really want to delete this model and all the tokens associate with it? This action can't be undone.</p>}
+                footer={
+                    <>
+                        <LoadingButton
+                            className="btn btn-danger" 
+                            onClick={() => {
+                                return new Promise<void>((resolve, reject) => {
+                                    try {
+                                        removeModel()
+                                        setConfirmDelete(false)
+                                        setSelectedModel(undefined)
+                                        resolve()
+                                    } catch(e) {
+                                        reject()
+                                    }
+                                })
+                            }}
+                            label="Confirm"
+                        />
+                        <button type="button" 
+                            className="btn btn-secondary" 
+                            onClick={() => {
+                                setConfirmDelete(false)
+                                setSelectedModel(undefined)
+                            }}>Cancel</button>
+                    </>
+                }
+            />
             
             <ActionList>
                 <IconButton onClick={() => history.push("/create-model")} label={"Create new model"} iconClass={"fas fa-plus-circle"} />
@@ -57,12 +110,22 @@ const ModelList: React.FC<{session: ISession}> = ({session}): JSX.Element => {
                                         iconClass={"fas fa-book-open"} 
                                         onClick={undefined}
                                     />
-                                    <IconButton 
-                                        label={"Model"} 
-                                        iconClass={"far fa-edit"} 
-                                        buttonClass={"btn btn-secondary"}
-                                        onClick={() => history.push(`/model/${m.id}`)}
-                                    />
+                                    <div className="model-actions">
+                                        <IconButton 
+                                            label={"Model"} 
+                                            iconClass={"far fa-edit"} 
+                                            buttonClass={"btn btn-secondary"}
+                                            onClick={() => history.push(`/model/${m.id}`)}
+                                        />
+                                        <IconButton 
+                                            iconClass={"fas fa-trash"} 
+                                            buttonClass={"btn btn-danger"}
+                                            onClick={() => {
+                                                setSelectedModel(m.id)
+                                                setConfirmDelete(true)
+                                            }}
+                                        />
+                                    </div>
                                 </CardText>
                             </div>
                         </Card>
@@ -80,15 +143,12 @@ const ActionList = styled.div`
 `
 
 const Card = styled.div`
-    max-width: 250px;
-    min-width: 250px;
+    max-width: 300px;
+    min-width: 300px;
 `
 
 const CardText = styled.div`
-    text-align: center;
-    display: ruby;
-
-    .btn-primary {
-        margin-right: 15px;
+    .model-actions {
+        float: right;
     }
 `

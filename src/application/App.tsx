@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { HashRouter, Route, Switch } from 'react-router-dom'
 import styled from 'styled-components'
 import EditModel from './model/edit'
@@ -8,19 +8,25 @@ import ModelList from './model/list'
 import Navbar from './navbar/navbar'
 import useModel from '../hooks/useModel'
 import MODEL_API from '../api/models'
+import { NotificationMessage, NOTIFICATION_TYPE } from '../components/notification'
+import { NOT_FOUND_HTTP } from '../utils'
 
 const App = () => {
 
     const { session, setSession } = useSession()
     const { models, setModels } = useModel()
 
+    const [ error, setError ] = useState<string>()
+
     if(!session) {
         return <Login setSession={setSession} />
     } else {
         MODEL_API.models(session.id)
-        .then(resp => {
-            if(resp) setModels(resp)
-        })
+            .then(resp => {
+                if(resp == NOT_FOUND_HTTP) setModels(undefined)
+                else setModels(resp)
+            })
+            .catch(e => setError("Can't retrieve our models :("))
     }
 
     return (
@@ -35,6 +41,8 @@ const App = () => {
                                     <>
                                         <Navbar session={session} setSession={setSession} />
 
+                                        <NotificationMessage message={error} setMessage={setError} type={NOTIFICATION_TYPE.DANGER} />
+
                                         <Route exact path={`/`}>
                                             <ModelList session={session} />
                                         </Route>
@@ -43,7 +51,7 @@ const App = () => {
                                             <EditModel session={session} />
                                         </Route>
 
-                                        {models.map(m => {
+                                        {models?.map(m => {
                                             return (
                                                 <Route exact path={`/model/${m.id}`}>
                                                     <EditModel session={session} model={m} />
