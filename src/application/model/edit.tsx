@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import MODEL_API from '../../api/models'
 import IconButton from '../../components/icon-button'
+import ImageUploader from '../../components/image-uploader'
 import LoadingButton from '../../components/loading-button'
-import { TEXT_TYPE } from '../../utils'
+import { NO_IMAGE, TEXT_TYPE, toBase64 } from '../../utils'
 
 const EditModel: React.FC<{ session: ISession, model?: IModel }> = ({session, model}) => {
 
@@ -53,13 +54,6 @@ const EditModel: React.FC<{ session: ISession, model?: IModel }> = ({session, mo
         toBase64(file).then(res => setModelImage(res))
     }
 
-    const toBase64 = (file: Blob) => new Promise<string>((resolve, reject) => {
-        const reader = new FileReader()
-        reader.readAsDataURL(file)
-        reader.onload = () => resolve(reader.result as string)
-        reader.onerror = error => reject(error)
-    })
-
     return (
         <>
             <ActionButtons>
@@ -79,6 +73,7 @@ const EditModel: React.FC<{ session: ISession, model?: IModel }> = ({session, mo
                 />
                 <IconButton iconClass={"fas fa-plus-circle"} label={"Add Field"} onClick={() => appendNewField()} />
             </ActionButtons>
+
             <br/>
             
             <div className="form-row">
@@ -90,57 +85,71 @@ const EditModel: React.FC<{ session: ISession, model?: IModel }> = ({session, mo
                 </div>
             </div>
 
-            <ImageBox>
-                {modelImage && <img src={modelImage} alt={model?.name} width="250px" height="250px" />}
-                <label htmlFor="modelImage" className="btn btn-primary">
-                    <i className="fas fa-folder-open" />
-                </label>
-                <input 
-                    id="modelImage"
-                    type="file" 
-                    accept="image/png, image/jpeg" 
-                    multiple={false}
-                    onChange={() => updateModelImage()}
-                />
-            </ImageBox>
-
-            <div className="card-group">
-                {fields?.map(field => {
-                    return (
-                        <Card className="card">
-                            <div className="card-body">
-                                <input type="text" className="form-control" placeholder="Field name" value={field.name} onChange={e => updateField(field.name, e.target.value)} />
-                            
-                                <select className="form-select" defaultValue={field.type} onChange={e => field.type = e.target.value}>
-                                    {createSelectOptions()}
-                                </select>
+            <Fields>
+                <div className="card-columns">
+                    <div className="card">
+                        <div className="card-body">
+                            <ImageUploader 
+                                id="modelImage"
+                                image={modelImage}
+                                imageClass="card-img-top" 
+                                defaultImage={NO_IMAGE}
+                                alt={modelName}
+                                onUpload={() => updateModelImage()}
+                                onDelete={setModelImage}
+                                imgHeight="250px"
+                                imgWidth="250px"
+                            />
                             </div>
-                        </Card>
-                    )
-                })}
-            </div>
+                        </div>
+
+                    {fields?.map(field => {
+                        return (
+                            <div className="card">
+                                <div className="card-body">
+                                    <input type="text" className="form-control" placeholder="Field name" value={field.name} onChange={e => updateField(field.name, e.target.value)} />
+                                
+                                    <select className="form-select" defaultValue={field.type} onChange={e => field.type = e.target.value}>
+                                        {createSelectOptions()}
+                                    </select>
+                                </div>
+                            </div>
+                        )
+                    })}
+                </div>
+            </Fields>
         </>
     )
 }
 
 export default EditModel
 
-const ActionButtons = styled.div`
-    button {
-        margin-right: 10px; 
+const Fields = styled.div`
+    @media (min-width: 576px) { .card-columns { column-count: 2; } }
+
+    @media (min-width: 768px) { .card-columns { column-count: 3; } }
+
+    @media (min-width: 992px) { .card-columns { column-count: 4; } }
+
+    @media (min-width: 1200px) { .card-columns { column-count: 5; } }
+
+    @media (min-width: 1800px) { .card-columns { column-count: 9; } }
+
+    .card-columns {    
+        column-break-inside: avoid;
     }
-`
-
-const Card = styled.div`
-    min-width: 210px;
-`
-
-const ImageBox = styled.div`
-    label {
-        cursor: pointer;
+    
+    .card {
+        display: inline-block;
     }
 
     input {
-        display: none;
+        font-weight: bold;
+    }
+`
+
+const ActionButtons = styled.div`
+    button {
+        margin-right: 10px; 
     }
 `

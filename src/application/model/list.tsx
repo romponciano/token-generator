@@ -4,6 +4,7 @@ import MODEL_API from "../../api/models"
 import { useHistory } from 'react-router-dom'
 import { NotificationMessage, NOTIFICATION_TYPE } from "../../components/notification"
 import IconButton from "../../components/icon-button"
+import { NO_IMAGE } from "../../utils"
 
 const ModelList: React.FC<{session: ISession}> = ({session}): JSX.Element => {
 
@@ -38,9 +39,16 @@ const ModelList: React.FC<{session: ISession}> = ({session}): JSX.Element => {
                 {models && Object.entries(models).map(model => {
                     const m: IModel = model[1]
                     const modelName = m.name
+                    const modelImage = m.image
                     return (
                         <Card className="card" key={modelName}>
-                            <img className="card-img-top" src="https://e1.pngegg.com/pngimages/671/678/png-clipart-one-piece-jolly-roger-dock-and-folder-icons-by-luffy-jolly-roger-straw-hat-pirates-logo-thumbnail.png" alt={modelName} />
+                            <img 
+                                className="card-img-top" 
+                                src={modelImage ? modelImage : NO_IMAGE} 
+                                alt={modelName} 
+                                width="250px" 
+                                height="250px"
+                            />
                             <div className="card-body">
                                 <h5 className="card-title">{modelName}</h5>
                                 <CardText className="card-text">
